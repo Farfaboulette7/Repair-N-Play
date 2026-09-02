@@ -1,0 +1,599 @@
+/* ==========================================================================
+   1. VARIABLES GLOBALES (:root)
+   ========================================================================== */
+:root {
+  --nier-frame-offset: 90px;   /* Décalage vertical des barres de cadre décoratives */
+  --nier-border-height: 20px;  /* Hauteur des bordures/motifs décoratifs */
+  --nier-top-gap: 6px;         /* Espace libre entre la bordure haute et la barre d'onglets */
+}
+
+/* ==========================================================================
+   2. CONFIGURATION DE BASE DU CORPS (Body & Liens)
+   ========================================================================== */
+body {
+  min-height: 0;
+  height: calc(100vh - 60px); /* Hauteur basée sur le viewport moins 60px de marge */
+  font-family: Arial, sans-serif;
+  color: rgb(72, 70, 61);       /* Couleur de texte principale (brun/gris foncé) */
+  background-color: rgb(194, 189, 166); /* Fond beige style NieR */
+  position: relative;
+
+  /* Superposition du logo de fond et de la grille fine (lignes horizontales/verticales) */
+  background-image:
+          url(https://assets.codepen.io/3735/nier-bg.svg),
+          linear-gradient(rgba(72,70,61,0.025) 2px, transparent 2px),
+          linear-gradient(90deg, rgba(72,70,61,0.025) 2px, transparent 2px);
+  background-size: 125%, 125%, 6px 6px;
+  background-position: center center;
+  background-repeat: no-repeat, repeat, repeat;
+  margin: 30px 0;
+  padding: 60px 0;
+}
+
+/* Les liens héritent de la couleur du texte parent par défaut */
+a {
+  color: inherit;
+}
+
+/* ==========================================================================
+   3. BORDURES DÉCORATIVES HAUTE ET BASSE (Pseudo-éléments ::before / ::after)
+   ========================================================================== */
+body:before, body:after {
+  content: "";
+  display: block;
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 14px;
+  /* Motif SVG répétatif horizontalement pour former les bordures haute/basse */
+  background: url(https://assets.codepen.io/3735/nier-border.svg) repeat-x;
+  background-size: contain;
+  z-index: 1;
+}
+
+body:before { top: 0; }     /* Positionne la bordure décorative en haut */
+body:after { bottom: 0; }  /* Positionne la bordure décorative en bas */
+
+/* ==========================================================================
+   4. TYPOGRAPHIE ET TITRES
+   ========================================================================== */
+h1, h2 {
+  font-family: Arial, sans-serif;
+  font-size: 36px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 64px;
+  /* Effet d'ombre portée nette et angulaire propre à l'UI NieR */
+  text-shadow: 6px 6px 0px rgba(72, 70, 61, 0.25);
+}
+
+/* Masque les spans éventuels dans les titres (souvent utilisé pour des effets JS) */
+h1 span, h2 span {
+  opacity: 0;
+}
+
+/* ==========================================================================
+   5. NAVIGATION / BARRE D’ONGLETS (Top Tabs)
+   ========================================================================== */
+.top-tabs {
+  top: calc(var(--nier-frame-offset) - 70px);
+  display: flex;
+  gap: 40px;
+  padding: 10px 40px;
+  background: rgba(0,0,0,0.03);
+  align-items: center;
+  justify-content: center;
+  position: sticky; /* Reste fixé au défilement */
+  z-index: 50;
+  /* backdrop-filter: blur(4px); */ /* Optionnel : floute le contenu défilant en dessous */
+}
+
+/* ==========================================================================
+   6. CONTENEURS ET PANNEAUX DE CONTENU (Tab Panels)
+   ========================================================================== */
+.tab-panel {
+  padding: 70px;
+}
+
+/* Masque complètement les panneaux inactifs avec l'attribut HTML [hidden] */
+.tab-panel[hidden] {
+  display: none !important;
+}
+
+/* ==========================================================================
+   7. DESIGN DES BOUTONS INTERACTIFS (Style NieR:Automata)
+   ========================================================================== */
+.button {
+  position: relative;
+  display: block;
+  width: 280px;            /* Largeur de base du bouton */
+  max-width: 90%;          /* Sécurité anti-débordement */
+  font-family: Arial, sans-serif;
+  font-size: 20px;
+
+  /* Effet de balayage au survol : fond bicolore glissant de gauche à droite */
+  background: linear-gradient(
+          90deg,
+          rgba(72,70,61,0.25) 0%,
+          rgba(72,70,61,0.25) 50%,
+          rgb(72,70,61) 50%,
+          rgb(72,70,61) 100%
+  );
+  background-size: 200%;
+  color: rgb(72,70,61);
+  border: none;
+  border-top: transparent 3px solid;
+  border-bottom: transparent 3px solid;
+  padding: 10px 14px 9px;
+  line-height: 1;
+  cursor: pointer;
+  text-align: left;
+  text-transform: none;
+  letter-spacing: 1px;
+  /* Transitions douces pour toutes les propriétés interactives */
+  transition:
+          background 0.4s ease-in-out,
+          border-color 0.3s ease-in-out,
+          color 0.3s ease-in-out,
+          box-shadow 0.4s ease-in-out;
+}
+
+/* --- Petit carré décoratif à gauche du texte --- */
+.button::before {
+  content: '';
+  display: inline-block;
+  height: 16px;
+  width: 16px;
+  background: rgb(72,70,61);
+  margin-right: 6px;
+  transition: background-color .3s ease-in-out;
+  vertical-align: middle;
+}
+
+/* --- Curseur/Flèche NieR apparaissant au survol --- */
+.button::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: -30px; /* Caché légèrement plus à gauche */
+  width: 24px;
+  height: 14px;
+  background: url("assets/nier-pointer.svg") no-repeat center;
+  background-size: contain;
+  opacity: 0;
+  transform: translateY(-50%);
+  transition: opacity 0.4s ease-in-out, left 0.3s ease-in-out;
+  pointer-events: none;
+  filter: brightness(0.2) contrast(1.5);
+  z-index: 3;
+}
+
+/* --- États d'interaction du bouton (Hover, Focus, Actif) --- */
+.button:hover,
+.button:focus,
+.button.active {
+  background-position: -100% 100%;      /* Glissement du dégradé */
+  border-color: rgb(194,189,166);       /* Apparition de bordures claires */
+  color: rgb(194,189,166);              /* Inversion de couleur du texte */
+  box-shadow: 4px 4px 6px 2px rgba(72,70,61,0.15);
+  outline: 0;
+}
+
+/* Changement de couleur du carré à l'état actif/survol */
+.button:hover::before,
+.button.active::before {
+  background: rgb(194,189,166);
+}
+
+/* Révélation et glissement de la flèche NieR */
+.button:hover::after,
+.button.active::after {
+  opacity: 1;
+  left: -36px;
+}
+
+/* ==========================================================================
+   8. GROUPES ET LIGNES DE BOUTONS (Vertical UI)
+   ========================================================================== */
+.button-group, .app-buttons {
+  display: flex;
+  flex-direction: column;
+  padding-left: 60px;
+  background-repeat: no-repeat;
+  /* Lignes verticales stylisées dessinées avec des dégradés (style UI NieR) */
+  background-image:
+          linear-gradient(90deg, transparent 12px, rgba(72,70,61,0.25) 12px, transparent 16px),
+          linear-gradient(90deg, rgba(72,70,61,0.25) 6px, transparent 0px);
+}
+
+.button-group .button,
+.app-buttons .button {
+  margin-bottom: 18px;
+}
+
+.button-group .button:last-child,
+.app-buttons .button:last-child {
+  margin-bottom: 0;
+}
+
+/* ==========================================================================
+   9. MISE EN PAGE DES APPLICATIONS (App Tab & Cards)
+   ========================================================================== */
+.app-tab {
+  display: flex;
+  gap: 40px;
+  align-items: flex-start;
+  position: relative;
+  min-height: 300px;
+}
+
+/* --- Cartes/Panneaux d'affichage des détails (Figure) --- */
+.app-tab figure {
+  position: absolute;
+  top: 0;
+  right: 200px;
+  width: 45%;
+  max-width: 520px;
+  opacity: 0;                           /* Masqué par défaut */
+  transform: translateX(50px);          /* Décalé vers la droite */
+  transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.25, 0.1, 0.25, 1);
+  pointer-events: none;
+  z-index: 0;
+  text-align: left;
+}
+
+/* Figure active (Visible) */
+.app-tab figure.active {
+  opacity: 1;
+  transform: translateX(0);             /* Glisse vers sa position finale */
+  pointer-events: auto;
+  z-index: 2;
+}
+
+/* Figure sortante (Transition de sortie) */
+.app-tab figure.exit {
+  opacity: 0;
+  transform: translateX(-50px);         /* Glisse vers la gauche */
+  z-index: 1;
+}
+
+/* --- Structure globale de la carte <figure> --- */
+figure {
+  display: flex;
+  flex-direction: column;
+  margin: 0 0 1rem 0;
+  background-color: #dcd8c0;            /* Fond de carte beige-gris */
+  padding: 0.5rem;
+}
+
+figure > :not(figcaption) {
+  margin: 0.5rem;
+}
+
+/* En-tête du panneau (<figcaption>) */
+figure > figcaption {
+  order: -1;                           /* Force l'élément à être tout en haut */
+  margin: -0.5rem;
+  margin-bottom: 0.5rem;
+  padding: 0.5rem 1rem;
+  font-size: 1.2rem;
+  background-color: #454138;           /* Bandeau sombre */
+  color: #bab5a1;                      /* Texte clair */
+}
+
+/* ==========================================================================
+   10. MÉDIAS DANS LES FIGURES (Logos & Previews)
+   ========================================================================== */
+.app-media {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+/* Logo de l'application */
+.app-logo {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  background-color: rgba(255,255,255,0.2);
+  border: 1px solid rgba(72,70,61,0.25);
+  border-radius: 8px;
+  padding: 6px;
+  box-shadow: 2px 2px 4px rgba(72,70,61,0.15);
+}
+
+/* Aperçu/Screenshot de l'application */
+.app-preview {
+  flex: 1;
+  max-width: 70%;
+  height: 80px;
+  object-fit: cover;
+  border: 1px solid rgba(72,70,61,0.25);
+  border-radius: 8px;
+  box-shadow: 2px 2px 6px rgba(72,70,61,0.15);
+  transition: transform 0.3s ease;
+}
+
+.app-preview:hover {
+  transform: scale(1.03);               /* Léger zoom au survol */
+}
+
+/* ==========================================================================
+   11. MODALE / OVERLAY D’AGRANDISSEMENT D'IMAGE
+   ========================================================================== */
+.image-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.8);          /* Fond noir semi-transparent */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+  backdrop-filter: blur(3px);          /* Floute l'arrière-plan */
+}
+
+.image-overlay img {
+  max-width: 90%;
+  max-height: 90%;
+  border: 2px solid rgba(255,255,255,0.3);
+  box-shadow: 0 0 12px rgba(255,255,255,0.3);
+  border-radius: 8px;
+  animation: fadeIn 0.3s ease;
+}
+
+/* Animation de pop-in pour la modale image */
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* ==========================================================================
+   12. ADAPTATION RESPONSIVE GLOBALE (Desktop / Mobiles)
+   ========================================================================== */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;                  /* Empêche le défilement horizontal parasitaire */
+  overscroll-behavior: none;
+}
+
+body::before, body::after {
+  z-index: 1;
+  height: var(--nier-border-height);
+}
+
+body::before { top: var(--nier-frame-offset); }
+body::after  { bottom: var(--nier-frame-offset); }
+
+/* --- Écrans Moyens (Tablettes / Petits Laptops - max 1200px) --- */
+@media (max-width: 1200px) {
+  .button {
+    width: 240px;
+    font-size: 18px;
+    padding: 9px 12px;
+  }
+}
+
+/* --- Écrans Mobiles (max 768px) --- */
+@media (max-width: 768px) {
+  :root {
+    --nier-frame-offset: 14px;   /* Réduction des marges sur mobile */
+    --nier-border-height: 14px;
+    --nier-top-gap: 8px;
+  }
+
+  body {
+    height: 100svh;             /* Utilisation de svh (Small Viewport Height) pour mobiles */
+    min-height: 100svh;
+    background-size: cover;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Fixation stricte des bordures haute/basse en mobile */
+  body::before,
+  body::after {
+    position: fixed;
+    left: 0;
+    width: 100%;
+    height: var(--nier-border-height);
+    background-size: contain;
+    z-index: 1000;
+  }
+
+  body::before { top: var(--nier-frame-offset); }
+  body::after  { bottom: var(--nier-frame-offset); }
+
+  /* Repositionnement dynamique sous la bordure mobile */
+  .top-tabs {
+    position: sticky;
+    top: calc(var(--nier-frame-offset) + var(--nier-border-height) + var(--nier-top-gap));
+    margin-top: 0;
+  }
+
+  h1, h2 {
+    margin-top: calc(var(--nier-frame-offset) + var(--nier-border-height) + var(--nier-top-gap));
+  }
+
+  .tab-panel {
+    padding: 16px;
+    margin-top: calc(var(--nier-frame-offset) + var(--nier-border-height) + var(--nier-top-gap));
+    margin-bottom: calc(var(--nier-border-height) + var(--nier-frame-offset));
+  }
+
+  /* Ajustement de la taille des boutons sur mobile */
+  .button {
+    width: 200px;
+    font-size: 16px;
+    padding: 8px 10px;
+  }
+
+  .button::after {
+    width: 22px;
+    height: 12px;
+    left: -22px;
+  }
+
+  /* Affichage des panneaux d'applications en pleine largeur */
+  .app-tab figure {
+    position: relative;
+    left: 0;
+    width: 100%;
+    max-width: none;
+    margin-top: 20px;
+    transform: none;
+  }
+}
+
+/* ==========================================================================
+   13. SECTION ONGLET FAVORIS (Panneau Gauche & Recherche)
+   ========================================================================== */
+.fav-tab {
+  display: flex;
+  gap: 40px;
+  align-items: flex-start;
+  position: relative;
+  min-height: 350px;
+}
+
+/* Panneau conteneur de gauche (Contient la recherche + boutons favoris) */
+.fav-left-panel {
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+  max-width: 440px;
+}
+
+/* --- Champ de Recherche NieR --- */
+.search-box {
+  padding-left: 60px; /* Aligné verticalement avec la ligne décorative */
+  margin-bottom: 20px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.search-box input {
+  width: 100%;
+  background: rgba(72, 70, 61, 0.1);
+  border: none;
+  border-bottom: 2px solid rgb(72, 70, 61); /* Ligne inférieure soulignée */
+  padding: 8px 12px;
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+  color: rgb(72, 70, 61);
+  outline: none;
+  transition: background 0.3s ease, border-color 0.3s ease;
+  box-sizing: border-box;
+}
+
+.search-box input:focus {
+  background: rgba(72, 70, 61, 0.2);
+  border-bottom-color: rgb(194, 189, 166);
+}
+
+.search-box input::placeholder {
+  color: rgba(72, 70, 61, 0.6);
+  font-style: italic;
+}
+
+/* --- Zone de liste des Boutons Favoris --- */
+.fav-buttons {
+  display: flex;
+  flex-direction: column;
+  padding-left: 60px;
+  width: 100%;
+  box-sizing: border-box;
+  background-repeat: no-repeat;
+  /* Reprise du motif de ligne verticale NieR */
+  background-image:
+          linear-gradient(90deg, transparent 12px, rgba(72,70,61,0.25) 12px, transparent 16px),
+          linear-gradient(90deg, rgba(72,70,61,0.25) 6px, transparent 0px);
+}
+
+.fav-buttons .button {
+  margin-bottom: 14px;
+  width: 100%;             /* Adapté à la largeur du champ de recherche */
+  max-width: 100%;
+  box-sizing: border-box;
+  white-space: nowrap;     /* Empêche le texte de revenir à la ligne */
+  overflow: hidden;
+  text-overflow: ellipsis;/* Ajoute "..." si le nom du favori est trop long */
+  padding-right: 32px;
+}
+
+.fav-buttons .button:last-child {
+  margin-bottom: 0;
+}
+
+/* --- Variante : Bouton de retour dans l'arborescence des favoris --- */
+.button.back-btn {
+  margin-bottom: 20px;
+  background: rgba(72, 70, 61, 0.15);
+  font-weight: bold;
+}
+
+/* Icône flèche retour ⤺ intégrée via CSS */
+.button.back-btn::before {
+  content: '⤺';
+  background: transparent;
+  font-size: 16px;
+  margin-right: 8px;
+  width: auto;
+  height: auto;
+}
+
+/* --- Variante : Flèche indicatrice pour les boutons de dossiers --- */
+.button.folder-btn::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  left: auto;
+  width: 0;
+  height: 0;
+  /* Triangle dessiné en CSS pur bord à bord */
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-left: 6px solid rgb(72,70,61);
+  transform: translateY(-50%);
+  opacity: 0.7;
+  transition: transform 0.3s ease, border-color 0.3s ease, opacity 0.3s ease;
+  filter: none;
+}
+
+.button.folder-btn:hover::after,
+.button.folder-btn.active::after {
+  opacity: 1;
+  border-left-color: rgb(194,189,166);
+  transform: translateY(-50%) translateX(3px); /* Décale légèrement vers la droite au survol */
+}
+
+/* ==========================================================================
+   14. PANNEAU DE DROITE : AFFICHAGE DES DÉTAILS DE FAVORIS
+   ========================================================================== */
+.fav-figures {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100%;
+  max-width: 100%;
+}
+
+.fav-figures figure {
+  opacity: 0;
+  transform: translateX(50px);
+  transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.25, 0.1, 0.25, 1);
+  pointer-events: none;
+}
+
+.fav-figures figure.active {
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: auto;
+}

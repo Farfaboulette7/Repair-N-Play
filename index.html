@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Dashboard NieR Automata</title>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
+
+<nav class="top-tabs" role="tablist" aria-label="Main tabs">
+  <button class="button" data-tab="tab-app" role="tab" aria-selected="false">Applications</button>
+  <button class="button" data-tab="tab-title" role="tab" aria-selected="true">???</button>
+  <button class="button" data-tab="tab-fav" role="tab" aria-selected="false">Favoris</button>
+  <button class="button" data-tab="tab-maps" role="tab" aria-selected="false">???</button>
+  <button class="button" data-tab="tab-settings" role="tab" aria-selected="false">???</button>
+</nav>
+
+<section id="tab-title" class="tab-panel active" role="tabpanel">
+  <h2>Title</h2>
+  <p>page titre.</p>
+</section>
+
+<section id="tab-app" class="tab-panel" role="tabpanel" hidden>
+  <h2>Applications</h2>
+
+  <div class="app-tab">
+    <div class="app-buttons">
+      <button class="button" data-app="app1">Portail DSM</button>
+      <button class="button" data-app="app2">Vaultwarden</button>
+      <button class="button" data-app="app3">Plex</button>
+      <button class="button" data-app="app3">Metube</button>
+      <button class="button" data-app="app3">Traccar</button>
+      <button class="button" data-app="app3">Adguard Home</button>
+    </div>
+
+    <figure>
+      <figcaption>Synology portail DSM</figcaption>
+      <div>
+        <img src="assets/synology-dsm.png" alt="Logo DSM" class="app-logo">
+        <img src="assets/DSM_screen.png" alt="Capture DSM" class="app-preview" onclick="openPreview(this)">
+        <hr>
+        <p>
+          Interface principale de gestion du NAS Synology.<br>
+          Permet de contrôler les volumes, utilisateurs, partages et services hébergés.<br>
+          Accès centralisé à toutes les applications du système.
+        </p>
+        <a class="app-link" href="https://poupounas.synology.me" target="_blank">Lien portail DSM</a><br>
+      </div>
+    </figure>
+
+    <figure>
+      <figcaption>Vaultwarden</figcaption>
+      <div>
+        <img src="assets/Bitwarden_logo.png" alt="Logo Bitwarden" class="app-logo">
+        <img src="assets/BitWarden_screen.png" alt="Capture Bitwarden" class="app-preview" onclick="openPreview(this)">
+        <hr>
+        <p>
+          Gestionnaire de mots de passe auto-hébergé, compatible avec Bitwarden.<br>
+          Stocke et chiffre localement toutes les données sensibles.<br>
+          Accessible via navigateur ou extension pour une synchronisation sécurisée.
+        </p>
+        <a class="app-link" href="https://vaultwarden.poupounas.synology.me" target="_blank">Lien Vaultwarden</a><br>
+      </div>
+    </figure>
+
+    <figure>
+      <figcaption>Plex</figcaption>
+      <div>
+        <img src="assets/Plex_logo.svg.png" alt="Logo Plex" class="app-logo">
+        <img src="assets/Plex_screen.png" alt="Capture Plex" class="app-preview" onclick="openPreview(this)">
+        <hr>
+        <p>
+          Plateforme multimédia complète pour organiser et diffuser films, séries et musiques.<br>
+          Fournit un streaming fluide depuis le NAS vers n’importe quel appareil.<br>
+          Interface élégante et personnalisable, adaptée à toute la famille.
+        </p>
+        <a class="app-link" href="https://plex.poupounas.synology.me" target="_blank">Lien Plex</a><br>
+      </div>
+    </figure>
+
+    <figure>
+      <figcaption>Metube</figcaption>
+      <div>
+        <img src="assets/Metube_logo.png" alt="Logo Metube" class="app-logo">
+        <img src="assets/Metube_screen.png" alt="Capture Metube" class="app-preview" onclick="openPreview(this)">
+        <hr>
+        <p>
+          Téléchargeur en ligne basé sur yt-dlp, optimisé pour Synology.<br>
+          Permet d’enregistrer des vidéos YouTube et d’autres plateformes directement sur le NAS.<br>
+          Interface simple, conversion automatique et classement dans la bibliothèque.
+        </p>
+        <a class="app-link" href="https://metube.poupounas.synology.me" target="_blank">Lien Metube</a><br>
+      </div>
+    </figure>
+
+    <figure>
+      <figcaption>Traccar</figcaption>
+      <div>
+        <img src="assets/traccar_logo.png" alt="Logo traccar" class="app-logo">
+        <img src="assets/Traccar_screen.png" alt="Capture traccar" class="app-preview" onclick="openPreview(this)">
+        <hr>
+        <p>
+          Serveur de suivi GPS open source.<br>
+          Centralise les positions de vos appareils pour un suivi en temps réel.<br>
+          Interface cartographique moderne avec historique des trajets et alertes configurables.
+        </p>
+        <a class="app-link" href="https://traccar.poupounas.synology.me" target="_blank">Lien Traccar</a><br>
+      </div>
+    </figure>
+
+    <figure>
+      <figcaption>Adguard Home</figcaption>
+      <div>
+        <img src="assets/AdGuard_logo.png" alt="Logo AdGuard" class="app-logo">
+        <img src="assets/Adguard_screen.png" alt="Capture AdGuard" class="app-preview" onclick="openPreview(this)">
+        <hr>
+        <p>
+          Système DNS local pour bloquer publicités, traqueurs et malwares.<br>
+          Protège l’ensemble de votre réseau domestique sans configuration côté client.<br>
+          Léger, rapide et totalement contrôlé depuis le NAS.
+        </p>
+        <a class="app-link" href="https://adguard.poupounas.synology.me" target="_blank">Lien Adguard Home</a><br>
+      </div>
+    </figure>
+  </div>
+</section>
+
+<section id="tab-fav" class="tab-panel" role="tabpanel" hidden>
+  <h2>Favoris</h2>
+  <div class="fav-tab app-tab">
+
+    <div id="fav-container" class="fav-left-panel">
+      <div class="search-box">
+        <input
+                type="text"
+                id="fav-search-input"
+                placeholder="Rechercher un favori..."
+                autocomplete="off"
+        />
+      </div>
+
+      <div id="fav-buttons-container" class="button-group fav-buttons"></div>
+    </div>
+
+    <div class="fav-figures"></div>
+  </div>
+</section>
+
+<section id="tab-maps" class="tab-panel" role="tabpanel" hidden>
+  <h2>Maps</h2>
+  <p>Map-related widgets.</p>
+</section>
+
+<section id="tab-settings" class="tab-panel" role="tabpanel" hidden>
+  <div class="button-layout">
+    <div class="button-column">
+      <h2>Settings</h2>
+      <div class="button-group">
+        <button type="button" class="button" data-tab="language"><span class="button-label">Language</span></button>
+        <button type="button" class="button" data-tab="game"><span class="button-label">Game</span></button>
+        <button type="button" class="button" data-tab="camera"><span class="button-label">Camera</span></button>
+        <button type="button" class="button" data-tab="screen"><span class="button-label">Screen</span></button>
+        <button type="button" class="button" data-tab="sound"><span class="button-label">Sound</span></button>
+
+        <button type="button" class="button" id="btn-import-bookmarks"><span class="button-label">Importer Favoris</span></button>
+
+        <input type="file" id="bookmark-file" accept=".html" style="display: none;">
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="main.js"></script>
+</body>
+</html>
